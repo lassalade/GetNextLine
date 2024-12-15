@@ -5,28 +5,24 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/15 12:58:28 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/15 19:51:27 by eelissal         ###   ########lyon.fr   */
+/*   Created: 2024/12/11 11:42:25 by eelissal          #+#    #+#             */
+/*   Updated: 2024/12/15 13:00:22 by eelissal         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H 
 
-# define BUFFER_SIZE 10
+# define BUFFER_SIZE 150
 
+# include <stdlib.h>
+# include <fcntl.h>
 # include <stdio.h>
-# include <unistd.h>
 
-typedef struct s_newline
-{
-	char		*line;
-	char		buffer[BUFFER_SIZE + 1];
-	int			bytes_read;
-	int			pos_n;
-}	t_newline;
-
-int		strindexof(char *s, char c);
+int		ft_strlen(char *s);
+int		ft_strchr(const char *s, char c);
+char	*ft_strnjoin(char *line, char *buffer, int n);
+int		islinecomplete(char *s);
 
 char	*get_next_line(int fd);
 

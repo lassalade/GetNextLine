@@ -5,95 +5,75 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 11:41:43 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/14 16:41:37 by eelissal         ###   ########lyon.fr   */
+/*   Created: 2024/12/15 12:57:40 by eelissal          #+#    #+#             */
+/*   Updated: 2024/12/15 19:51:24 by eelissal         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-int	lineiscomplete(int pos_n, int fd, char *buffer, char **line)
+int	ft_isnewline(char *leftover)
 {
-	int			bytes_read;
 
-	pos_n = islinecomplete(*line);
-	while (pos_n == -1)
-	{
-		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read <= 0)
-		{
-			// buffer[0] = '\0';
-			if (*line && **line)
-				return (islinecomplete(buffer));
-			break ;
-		}
-		buffer[bytes_read] = '\0';
-		printf("[%c]\n", buffer[bytes_read]);
-		if (ft_strchr(buffer, '\n') == -1)
-		{
-			*line = ft_strnjoin(*line, buffer, bytes_read);
-			if (!*line)
-				return (-2);
-		}
-		pos_n = islinecomplete(buffer);
-	}
-	return (pos_n);
 }
 
-char	*ft_free(char *leftover)
+int	check_leftover(t_newline *nl, char *leftover)
 {
-	free (leftover);
-	leftover = NULL;
-	return (leftover);
+	if (!leftover)
+		return (-1);
+	else
+	{
+		if (!nl->line)
+			ft_strndup(leftover, nl->pos_n); //calculer pos_n pour trouver index \n ou taille de BUFFER_SIZE
+		else
+			ft_strnjoin(nl->line, leftover, nl->pos_n);
+		if (!nl->line)
+			return (-1);
+	}
+	if (nl->line && leftover)
+		free (leftover);
+	return (0);
+}
+
+int	ft_alloc_and_cpy(t_newline *nl)
+{
+	int	count;
+
+	count = 0;
+	if (!nl->line)
+		count = ft_strdup();
+	else
+		count = ft_strnjoin();
+	return (count);
+}
+
+void	initial_struct(t_newline *nl, char *leftover)
+{
+	nl->line = NULL;
+	nl->pos_n = ft_isnewline(leftover); //return -1 si leftover null
 }
 
 char	*get_next_line(int fd)
 {
-	char		*line;
-	char		buffer[BUFFER_SIZE + 1];
 	static char	*leftover = NULL;
-	int			pos_n;
+	t_newline	*nl;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	line = NULL;
-	pos_n = -1;
-	if (leftover)
+	initial_struct(nl, leftover);
+	check_leftover(nl, leftover);
+	while (nl->pos_n == -1)
 	{
-		line = ft_strnjoin(line, leftover, ft_strlen(leftover));
-		leftover = ft_free(leftover);
+		nl->bytes_read = read(fd, nl->buffer, BUFFER_SIZE);
+		if (nl->bytes_read <= 0)
+		{
+			if (nl->line && *nl->line)
+				return (nl->bytes_read);
+			break ;
+		}
+		nl->buffer[nl->bytes_read] = '\0';
+		//function
 	}
-	pos_n = lineiscomplete(pos_n, fd, buffer, &line);
-	if (pos_n == -2)
-		return (NULL);
-	if (pos_n > -1)
-	{
-		int len = ft_strlen(buffer); // problem
-		printf("Size : [%s]\n", buffer);
-		line = ft_strnjoin(line, buffer, pos_n); // buffer empty
-		if (!line)
-			return (NULL);
-		leftover = ft_strnjoin(NULL, buffer + pos_n + 1, len - pos_n);
-	}
-	return (line);
-}
-
-int	main(void)
-{
-	int		fd;
-	char	*line;
-	int		i;
-
-	fd = open("test.txt", O_RDONLY);
-	line = get_next_line(fd);
-	i = 0;
-	while (line != NULL && i != 10)
-	{
-		printf("%s", line);
-		free(line);
-		line = get_next_line(fd);
-		i++;
-	}
-	close(fd);
-	return (0);
+	if (nl->pos_n > -1 /*function*/&& nl->bytes_read != 0)
+	//blabla
+	return (nl->line);
 }
