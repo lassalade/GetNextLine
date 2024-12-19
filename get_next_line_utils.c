@@ -1,49 +1,47 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/15 13:16:19 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/15 19:20:52 by eelissal         ###   ########lyon.fr   */
-/*                                                                            */
-/* ************************************************************************** */
-
-#include "get_next_line.h"
-
-int	ft_strlen(char *s)
+int	ft_strndup(char *src, int end)
 {
-	int	len;
+	char	*dup;
+	int		i;
 
-	len = 0;
-	if (!s)
-		return (-1);
-	while (s[len])
-		len++;
-	return (len);
-}
-
-int	ft_strindexof(char *s, char c)
-{
-	int	i;
-
-	if (!s)
-		return (-2);
+	if (!src || end < 0)
+		return (NULL);
+	dup = (char *)malloc(sizeof(char) * (end + 1));
+	if (!dup)
+		return (NULL);
 	i = 0;
-	while (s[i])
+	while (i < end && src[i])
 	{
-		if (s[i] == c)
-			return (i);
+		dup[i] = src[i];
 		i++;
 	}
-	return (-1);
+	dup[i] = '\0';
+	return (dup);
 }
 
-int	ft_strndup()
+int	ft_strnjoin(char *dest, char *src, int end)
 {
+	char	*joined;
+	int		i;
+	int		j;
 
+	if (!dest || !src || end < 0)
+		return (NULL);
+	joined = (char *)malloc(sizeof(char) * (ft_strlen(dest) + end + 2));
+	if (!joined)
+		return (NULL);
+	i = 0;
+	while (dest[i])
+	{
+		joined[i] = dest[i];
+		i++;
+	}
+	j = 0;
+	while (j < end && src[j])
+	{
+		joined[i + j] = src[j];
+		j++;
+	}
+	joined[i + j] = '\0';
+	free(dest);
+	return (joined);
 }
-
-int	ft_strnjoin()
-{}

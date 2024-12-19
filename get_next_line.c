@@ -6,50 +6,50 @@
 /*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/15 12:57:40 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/15 19:51:24 by eelissal         ###   ########lyon.fr   */
+/*   Updated: 2024/12/19 19:31:57 by eelissal         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-int	ft_isnewline(char *leftover)
+int	ft_check_buffer(t_newline *nl, char *buffer)
 {
-
-}
-
-int	check_leftover(t_newline *nl, char *leftover)
-{
-	if (!leftover)
+	if (!buffer)
+		return (-1);
+	nl->pos_n = ft_str_indexof(buffer, '\n');
+	if (!nl->line)
+		nl->check = ft_strndup(buffer, nl->pos_n);
+	else
+		nl->check = ft_strnjoin(nl->line, buffer, nl->pos_n);
+	if (!nl->line) // geré si absence de char * ou si erreur de malloc (-1) ou (NULL) ?
 		return (-1);
 	else
-	{
-		if (!nl->line)
-			ft_strndup(leftover, nl->pos_n); //calculer pos_n pour trouver index \n ou taille de BUFFER_SIZE
-		else
-			ft_strnjoin(nl->line, leftover, nl->pos_n);
-		if (!nl->line)
-			return (-1);
-	}
-	if (nl->line && leftover)
-		free (leftover);
-	return (0);
+		return (0);
 }
 
-int	ft_alloc_and_cpy(t_newline *nl)
+int	ft_check_leftover(t_newline *nl, char *leftover)
 {
-	int	count;
-
-	count = 0;
-	if (!nl->line)
-		count = ft_strdup();
-	else
-		count = ft_strnjoin();
-	return (count);
+	nl->check = ft_check_buffer(nl, leftover);
+	if (leftover) // && nl->line ??
+		free (leftover);
+	return (BUFFER_SIZE);
 }
 
-void	initial_struct(t_newline *nl, char *leftover)
+// int	ft_alloc_and_cpy(t_newline *nl)
+// {
+// 	int	count;
+
+// 	count = 0;
+// 	if (!nl->line)
+// 		count = ft_strdup();
+// 	else
+// 		count = ft_strnjoin();
+// 	return (count);
+// }
+
+void	ft_initial_struct(t_newline *nl, char *leftover)
 {
 	nl->line = NULL;
-	nl->pos_n = ft_isnewline(leftover); //return -1 si leftover null
+	nl->check = 0;
 }
 
 char	*get_next_line(int fd)
@@ -59,10 +59,13 @@ char	*get_next_line(int fd)
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	initial_struct(nl, leftover);
-	check_leftover(nl, leftover);
-	while (nl->pos_n == -1)
+	ft_initial_struct(nl, leftover);
+	nl->check = ft_check_leftover(nl, leftover);
+	if (nl->pos_n == -1 || nl->check != 0)
+		return (NULL);
+	while (nl->pos_n >= 0 && nl->pos_n <= BUFFER_SIZE)
 	{
+		nl->pos_n = ft_str_indexof(leftover, '\n');
 		nl->bytes_read = read(fd, nl->buffer, BUFFER_SIZE);
 		if (nl->bytes_read <= 0)
 		{
@@ -71,9 +74,33 @@ char	*get_next_line(int fd)
 			break ;
 		}
 		nl->buffer[nl->bytes_read] = '\0';
-		//function
+		nl->check = ft_check_buffer(nl, nl->buffer);
+		if (nl->pos_n == -1 || nl->check != 0)
+			return (NULL);
 	}
-	if (nl->pos_n > -1 /*function*/&& nl->bytes_read != 0)
-	//blabla
 	return (nl->line);
+}
+	// if (nl->pos_n > -1 /*function*/&& nl->bytes_read != 0)
+	// //blabla
+
+#include <fcntl.h>
+int	main(void)
+{
+	char *line;
+	int fd = open("test.txt", O_RDONLY);
+	if (fd < 0)
+	{
+		perror("Failed to open file");
+		return (-1);
+	}
+
+	while ((line = get_next_line(fd)) != NULL)
+	{
+		printf("%s\n", line);
+		free(line);
+	}
+
+	close(fd);
+	return (0);
+}
 }
