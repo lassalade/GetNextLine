@@ -25,10 +25,11 @@ int	ft_strnjoin(char *dest, char *src, int end)
 	int		j;
 
 	if (!dest || !src || end < 0)
-		return (NULL);
-	joined = (char *)malloc(sizeof(char) * (ft_strlen(dest) + end + 2));
+		return (-1);
 	if (!joined)
-		return (NULL);
+		joined = (char *)malloc(sizeof(char) * (end + 2));
+	else
+		joined = (char *)malloc(sizeof(char) * (ft_strlen(dest) + end + 2));
 	i = 0;
 	while (dest[i])
 	{
