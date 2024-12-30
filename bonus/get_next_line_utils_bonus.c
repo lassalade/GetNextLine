@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 11:42:30 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/29 11:55:29 by eelissal         ###   ########lyon.fr   */
+/*   Updated: 2024/12/28 18:43:49 by eelissal         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 int	ft_strlen(char *s)
 {
@@ -57,23 +57,23 @@ char	*ft_strchr(char *s, int c)
 	return (0);
 }
 
-char	*ft_strjoin(char *line, char *buffer)
+char	*ft_strjoin(char **line, char *buffer)
 {
 	char	*dest;
 	int		i;
 	int		j;
 
-	if (!line || !buffer)
+	if (!*line || !buffer)
 		return (NULL);
-	dest = malloc(sizeof(char) * (ft_strlen(line) + ft_strlen(buffer)) + 1);
+	dest = malloc(sizeof(char) * (ft_strlen(*line) + ft_strlen(buffer)) + 1);
 	if (!dest)
-	{
-		free(line);
 		return (NULL);
+	i = 0;
+	while (i < ft_strlen(*line))
+	{
+		dest[i] = *line[i];
+		i++;
 	}
-	i = -1;
-	while (++i < ft_strlen(line))
-		dest[i] = line[i];
 	j = 0;
 	while (j < ft_strlen(buffer))
 	{
@@ -81,11 +81,11 @@ char	*ft_strjoin(char *line, char *buffer)
 		j++;
 	}
 	dest[i + j] = '\0';
-	free(line);
+	ft_free(NULL, line);
 	return (dest);
 }
 
-char	*ft_strdup(char *s) //possibilite de remplacer par un ft_calloc et un memcopy
+char	*ft_strdup(char *s)
 {
 	int		i;
 	char	*dest;

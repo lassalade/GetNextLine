@@ -1,31 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eelissal <eelissal@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 11:42:25 by eelissal          #+#    #+#             */
-/*   Updated: 2024/12/28 15:43:08 by eelissal         ###   ########lyon.fr   */
+/*   Created: 2024/12/20 14:07:00 by eelissal          #+#    #+#             */
+/*   Updated: 2024/12/20 14:58:01 by eelissal         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "get_next_line.h"
 
-# include <unistd.h> // read
-# include <stdlib.h> // malloc & free
+size_t	ft_strlen(char *s)
+{
+	size_t	len;
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 120
-# endif
+	len = 0;
+	while (s[len])
+		len++;
+	return (len);
+}
 
-int		ft_strlen(char *s);
-char	*ft_strjoin(char *line, char *buffer);
-char	*ft_strchr(char *s, int c);
-void	*ft_memset(void *s, int c, size_t n);
-char	*ft_strdup(char *s);
+int	ft_str_indexof(char *s ,char c)
+{
+	int	i;
 
-char	*get_next_line(int fd);
+	if (!s)
+		return (-1);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == c)
+			return (i);
+		i++;
+	}
+	return (BUFFER_SIZE + 1);
+}
 
-#endif
+int	ft_strndup(t_newline *nl, char *src, int end)
+{
+}
+
+int	ft_strnjoin(t_newline *nl, char *s1, char *s2, int end)
+{
+}
